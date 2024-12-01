@@ -66,26 +66,43 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _deleteUser() async {
-    try {
-      await _auth.signOut();
-      
-      User? user = _auth.currentUser;
-      if (user != null) {
-        await user.delete();
-      }
+  try {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      await user.delete(); // Exclui a conta
+      await _auth.signOut(); // Força o logout após a exclusão
 
-      Navigator.pushReplacementNamed(context, '/login');
-    } catch (e) {
-      String errorMessage;
-      if (e is FirebaseAuthException) {
-        errorMessage = 'Error deleting account. Please try again later.';
+      // Verifica o estado do usuário e redireciona para o login
+      User? currentUser = _auth.currentUser;
+      if (currentUser == null) {
+        Navigator.pushReplacementNamed(context, '/login'); // Redireciona para login
       } else {
-        errorMessage = 'Unknown error occurred while deleting the account.';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: User still exists after deletion.')),
+        );
       }
-
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errorMessage)));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No user found to delete.')),
+      );
     }
+  } catch (e) {
+    String errorMessage;
+    if (e is FirebaseAuthException) {
+      if (e.code == 'requires-recent-login') {
+        errorMessage = 'You need to re-authenticate before deleting your account.';
+      } else {
+        errorMessage = 'Error deleting account. Please try again later.';
+      }
+    } else {
+      errorMessage = 'Unknown error occurred while deleting the account.';
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(errorMessage)),
+    );
   }
+}
 
   Future<void> _confirmDelete() async {
     showDialog(

@@ -24,10 +24,6 @@ class DefaultFirebaseOptions {
         return android;
       case TargetPlatform.iOS:
         return ios;
-      case TargetPlatform.macOS:
-        return macos;
-      case TargetPlatform.windows:
-        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -64,23 +60,5 @@ class DefaultFirebaseOptions {
     projectId: 'n3auth-dc74c',
     storageBucket: 'n3auth-dc74c.firebasestorage.app',
     iosBundleId: 'com.example.n3auth',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDP35v6QAov9Mp2YsN0OsNP8DggviHjPZU',
-    appId: '1:724099572732:ios:06c871d7423009d6840879',
-    messagingSenderId: '724099572732',
-    projectId: 'n3auth-dc74c',
-    storageBucket: 'n3auth-dc74c.firebasestorage.app',
-    iosBundleId: 'com.example.n3auth',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyBLOONXTrp44WX2qGgytrzpRHWXXHcUtBM',
-    appId: '1:724099572732:web:a47d8076f138e3bb840879',
-    messagingSenderId: '724099572732',
-    projectId: 'n3auth-dc74c',
-    authDomain: 'n3auth-dc74c.firebaseapp.com',
-    storageBucket: 'n3auth-dc74c.firebasestorage.app',
   );
 }

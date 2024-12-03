@@ -17,6 +17,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  //Função para realizar login com e-mail e senha
   Future<void> _signInWithEmailAndPassword() async {
     if (_emailController.text.trim().isEmpty || _passwordController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -31,6 +32,8 @@ class _LoginPageState extends State<LoginPage> {
         password: _passwordController.text.trim(),
       );
       Navigator.pushReplacementNamed(context, '/home');
+
+      //Tratamento de erro do login
     } on FirebaseAuthException catch (e) {
       String errorMessage = 'Unknown error';
       switch (e.code) {
@@ -61,11 +64,15 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  //Função para realizar login com GitHub
   Future<User?> _signInWithGitHub() async {
     try {
+      //Define o provedor GitHub
       final OAuthProvider githubProvider = OAuthProvider('github.com');
       final UserCredential userCredential = await _auth.signInWithPopup(githubProvider);
       return userCredential.user;
+
+      //Tratamento de erro do login com o Github
     } on FirebaseAuthException catch (e) {
       String errorMessage = 'Unknown error';
       if (e.code == 'account-exists-with-different-credential') {
@@ -148,12 +155,10 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(height: 30),
-              
-              // Botão de login
               ElevatedButton(
                 onPressed: _signInWithEmailAndPassword,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 103, 235, 109), // Mesma cor do botão de registro
+                  backgroundColor: const Color.fromARGB(255, 103, 235, 109),
                   padding: EdgeInsets.symmetric(vertical: 14, horizontal: 40),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -165,10 +170,9 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(height: 20),
-              
-              // Botão de login com GitHub
               ElevatedButton.icon(
                 onPressed: () async {
+                  //Ação de login com GitHub
                   User? user = await _signInWithGitHub();
                   if (user != null) {
                     Navigator.pushReplacementNamed(context, '/home');
@@ -192,8 +196,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(height: 20),
-              
-              // Navegação para a tela de registro
               TextButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/register');

@@ -12,12 +12,15 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+
+  //Controladores de entrada de dados
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  //Função para registrar um usuário
   Future<void> _register() async {
     try {
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
@@ -25,12 +28,15 @@ class _RegisterPageState extends State<RegisterPage> {
         password: _passwordController.text.trim(),
       );
 
+      //Criação do documento no Firestore com dados do usuário
       await _firestore.collection('users').doc(userCredential.user?.uid).set({
         'name': _nameController.text.trim(),
         'email': _emailController.text.trim(),
       });
 
       Navigator.pop(context);
+
+      //Tratamento de erro do register
     } on FirebaseAuthException catch (e) {
       String errorMessage = 'An unknown error occurred';
       switch (e.code) {

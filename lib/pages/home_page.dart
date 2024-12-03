@@ -14,25 +14,33 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  String _userName = '';
+  //Variável que armazena o nome do usuário
+  String _userName = ''; 
+  //Variável que armazena o email do usuário
   String _userEmail = '';
+  //Variável que armazena a foto de perfil do usuário
   String _userPhotoUrl = '';
 
   @override
   void initState() {
     super.initState();
+    //Verifica se o usuário está logado ao iniciar a página
     _checkUserStatus();
   }
 
+  //Função que verifica se o usuário está autenticado
   Future<void> _checkUserStatus() async {
+    //Obtém o usuário atual do Firebase
     User? user = _auth.currentUser;
     if (user == null) {
       Navigator.pushReplacementNamed(context, '/login');
     } else {
+      //Chama a função para buscar os dados do usuário logado
       _fetchUserData();
     }
   }
 
+  //Função para buscar os dados do usuário, como nome, e-mail e foto de perfil
   Future<void> _fetchUserData() async {
     try {
       User? user = _auth.currentUser;
@@ -48,12 +56,14 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  //Função para realizar o logout do usuário
   Future<void> _logout() async {
     try {
       await _auth.signOut();
       if (_auth.currentUser == null) {
         Navigator.pushReplacementNamed(context, '/login');
       }
+    //Tratamanto de erro ao tentar sair
     } catch (e) {
       String errorMessage;
       if (e is FirebaseAuthException) {
@@ -66,17 +76,20 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  //Função para excluir a conta do usuário
   Future<void> _deleteUser() async {
     try {
       User? user = _auth.currentUser;
       if (user != null) {
-        await user.delete(); // Exclui a conta
-        await _auth.signOut(); // Força o logout após a exclusão
+        //Exclui a conta
+        await user.delete();
+        //Força o logout após a exclusão 
+        await _auth.signOut(); 
 
-        // Verifica o estado do usuário e redireciona para o login
+        //Verifica o estado do usuário e redireciona para o login
         User? currentUser = _auth.currentUser;
         if (currentUser == null) {
-          Navigator.pushReplacementNamed(context, '/login'); // Redireciona para login
+          Navigator.pushReplacementNamed(context, '/login');
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error: User still exists after deletion.')),
@@ -105,6 +118,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  //Função para confirmar a exclusão da conta via um diálogo
   Future<void> _confirmDelete() async {
     showDialog(
       context: context,
@@ -136,6 +150,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        //Exibe o nome do usuário na barra de navegação
         title: Text('Welcome, $_userName!'),
         backgroundColor: Colors.black,
       ),
@@ -150,6 +165,7 @@ class _HomePageState extends State<HomePage> {
               _userPhotoUrl.isNotEmpty
                   ? CircleAvatar(
                       radius: 50,
+                      //Exibe a foto de perfil se estiver disponível
                       backgroundImage: NetworkImage(_userPhotoUrl),
                     )
                   : FaIcon(

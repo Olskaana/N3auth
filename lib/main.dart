@@ -10,12 +10,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
+
+  //Garante que o flutter esteja pronto antes de inicializar o Firebase
   WidgetsFlutterBinding.ensureInitialized();
 
+  //Inicializa o Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  //Configura a persistência da sessão para manter o usuário logado enquanto o app está ativo
   await FirebaseAuth.instance.setPersistence(Persistence.SESSION);
 
   runApp(MyApp());
